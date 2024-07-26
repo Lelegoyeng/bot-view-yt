@@ -18,6 +18,7 @@ const start = async () => {
             for (const urlObj of urls) {
                 const page = await browser.newPage();
                 await page.goto(urlObj.data);
+                console.log(`Opening... ${urlObj.data}`)
                 await page.keyboard.press('Tab');
                 await page.keyboard.press('Enter');
                 await new Promise(r => setTimeout(r, 30000)); // Wait for 30 seconds
