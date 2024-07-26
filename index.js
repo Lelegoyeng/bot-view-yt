@@ -4,26 +4,41 @@ const urls = require('./url.json');
 
 puppeteer.use(pluginStealth());
 
-
 const start = async () => {
     return new Promise(async (resolve, reject) => {
-        console.log('Starting..');
-        const browser = await puppeteer.launch({ headless: true });
-        const pages = await browser.pages();
-        pages[0].close();
+        try {
+            console.log('Starting..');
+            const browser = await puppeteer.launch({ headless: true });
+            const pages = await browser.pages();
+            pages[0].close();
 
-        for (const urlObj of urls) {
-            const page = await browser.newPage();
-            await page.goto(urlObj.data);
-            await page.keyboard.press('Tab');
-            await page.keyboard.press('Enter');
-            await new Promise(r => setTimeout(r, 30000));
-            await page.close();
+            for (const urlObj of urls) {
+                const page = await browser.newPage();
+                await page.goto(urlObj.data);
+                await page.keyboard.press('Tab');
+                await page.keyboard.press('Enter');
+                await new Promise(r => setTimeout(r, 30000)); // Wait for 30 seconds
+                await page.close();
+            }
+
+            await browser.close();
+            resolve();
+        } catch (error) {
+            reject(error);
         }
-
-        await browser.close();
-        resolve();
     });
 }
 
-start().then(() => console.log("Finished opening all URLs"));
+const runContinuously = () => {
+    start()
+        .then(() => {
+            console.log("Finished opening all URLs");
+            runContinuously(); // Call start again to run it continuously
+        })
+        .catch((err) => {
+            console.error("Error: ", err);
+            setTimeout(runContinuously, 60000); // Retry after 60 seconds if an error occurs
+        });
+}
+
+runContinuously();
