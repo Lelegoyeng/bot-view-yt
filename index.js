@@ -8,7 +8,10 @@ const start = async () => {
     return new Promise(async (resolve, reject) => {
         try {
             console.log('Starting..');
-            const browser = await puppeteer.launch({ headless: true });
+            const browser = await puppeteer.launch({
+                headless: false,
+                args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            });
             const pages = await browser.pages();
             pages[0].close();
 
