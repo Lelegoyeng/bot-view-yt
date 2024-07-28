@@ -9,7 +9,7 @@ const start = async () => {
         try {
             console.log('Starting..');
             const browser = await puppeteer.launch({
-                headless: true,
+                headless: false,
                 args: ['--no-sandbox', '--disable-setuid-sandbox'],
             });
             const pages = await browser.pages();
@@ -37,11 +37,11 @@ const runContinuously = () => {
     start()
         .then(() => {
             console.log("Finished opening all URLs");
-            runContinuously(); // Call start again to run it continuously
+            runContinuously();
         })
         .catch((err) => {
             console.error("Error: ", err);
-            setTimeout(runContinuously, 60000); // Retry after 60 seconds if an error occurs
+            setTimeout(runContinuously, 60000);
         });
 }
 
